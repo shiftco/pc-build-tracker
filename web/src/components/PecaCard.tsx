@@ -8,7 +8,7 @@ interface PecaCardProps {
 }
 
 export const PecaCard: React.FC<PecaCardProps> = ({ peca }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const melhor = peca.melhor_oferta;
   const bateuMeta = melhor && melhor.preco_pix <= peca.preco_alvo;
@@ -95,17 +95,20 @@ export const PecaCard: React.FC<PecaCardProps> = ({ peca }) => {
         </div>
       </div>
 
-      {/* Accordion / Comparativo de Lojas e Gráfico */}
+      {/* Comparativo de Lojas e Gráfico de Oscilação (Visível por padrão) */}
       <div className="border-t border-zinc-900 bg-zinc-950/40">
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-full px-5 py-2.5 flex items-center justify-between text-xs font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
-        >
-          <span>
-            {expanded ? 'Ocultar comparativo & histórico' : `Comparar em ${peca.ofertas.length} lojas e ver gráfico`}
+        <div className="px-5 pt-3 pb-2 flex items-center justify-between">
+          <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+            Comparativo ({peca.ofertas.length} lojas) & Histórico
           </span>
-          {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </button>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 flex items-center gap-1 transition-colors cursor-pointer"
+          >
+            <span>{expanded ? 'Recolher' : 'Expandir'}</span>
+            {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+        </div>
 
         {expanded && (
           <div className="px-5 pb-5 pt-1 space-y-4">
