@@ -111,17 +111,17 @@ export const INITIAL_PECAS: PecaBuild[] = [
         is_melhor_preco: true
       },
       {
-        loja: "KaBuM!",
-        preco_pix: 6099.90,
-        preco_parcelado: 7176.35,
-        url_produto: "https://www.kabum.com.br/produto/754152/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bits-gv-n5070gaming-oc-12gd",
-        disponivel: true
-      },
-      {
         loja: "Pichau",
         preco_pix: 6199.99,
         preco_parcelado: 7294.11,
         url_produto: "https://www.pichau.com.br/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bit-gv-n5070gaming-oc-12gd",
+        disponivel: true
+      },
+      {
+        loja: "KaBuM! (Marketplace)",
+        preco_pix: 12084.93,
+        preco_parcelado: 12084.93,
+        url_produto: "https://www.kabum.com.br/produto/754152/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bits-gv-n5070gaming-oc-12gd",
         disponivel: true
       }
     ],
@@ -161,8 +161,8 @@ export const INITIAL_PECAS: PecaBuild[] = [
       },
       {
         loja: "KaBuM!",
-        preco_pix: 1499.99,
-        preco_parcelado: 1764.70,
+        preco_pix: 1482.99,
+        preco_parcelado: 1647.77,
         url_produto: "https://www.kabum.com.br/produto/871302/placa-mae-asus-tuf-b650em-plus-amd-am5-m-atx-ddr5-wifi-6e-bluetooth-preto-90mb1lu0",
         disponivel: true
       },
@@ -252,8 +252,8 @@ export const INITIAL_PECAS: PecaBuild[] = [
       },
       {
         loja: "KaBuM! (Kingston NV3 1TB Gen4)",
-        preco_pix: 1299.99,
-        preco_parcelado: 1529.40,
+        preco_pix: 1149.99,
+        preco_parcelado: 1352.93,
         url_produto: "https://www.kabum.com.br/produto/621162/ssd-kingston-nv3-1-tb-m-2-2280-pcie-4-0-x4-nvme-leitura-6000-mb-s-gravacao-4000-mb-s-azul-snv3s-1000g",
         disponivel: true
       }
@@ -356,40 +356,54 @@ export const INITIAL_PECAS: PecaBuild[] = [
     categoria: "Monitor Gamer",
     especificacoes: "27\" Fast IPS • Resolução Quad HD (2560x1440) • 255Hz • 0.3ms • G-Sync / FreeSync Premium • Som Integrado",
     imagem_url: "/images/monitor.jpg?v=2",
-    preco_referencia: 1499.00,
+    preco_referencia: 1189.99,
     preco_alvo: 1300.00,
     ordem: 8,
     melhor_oferta: {
-      loja: "KaBuM!",
-      preco_pix: 1499.00,
-      preco_parcelado: 1763.53,
-      url_produto: "https://www.kabum.com.br/produto/1017203/monitor-gamer-asus-tuf-27-qhd-255hz-0-3ms-fast-ips-g-sync-comp-freesync-premium-hdr10-som-integrado-vg27aqme5f",
+      loja: "Pichau",
+      preco_pix: 1189.99,
+      preco_parcelado: 1400.00,
+      url_produto: "https://www.pichau.com.br/monitor-gamer-asus-tuf-gaming-27-pol-fast-ips-qhd-0-3ms-255hz-elmb-sync-hdmi-dp-vg27aqme5f",
       disponivel: true,
       is_melhor_preco: true
     },
     ofertas: [
       {
-        loja: "KaBuM! (Oficial em Estoque)",
-        preco_pix: 1499.00,
-        preco_parcelado: 1763.53,
-        url_produto: "https://www.kabum.com.br/produto/1017203/monitor-gamer-asus-tuf-27-qhd-255hz-0-3ms-fast-ips-g-sync-comp-freesync-premium-hdr10-som-integrado-vg27aqme5f",
+        loja: "Pichau (Menor Preço)",
+        preco_pix: 1189.99,
+        preco_parcelado: 1400.00,
+        url_produto: "https://www.pichau.com.br/monitor-gamer-asus-tuf-gaming-27-pol-fast-ips-qhd-0-3ms-255hz-elmb-sync-hdmi-dp-vg27aqme5f",
         disponivel: true,
         is_melhor_preco: true
       },
       {
-        loja: "Shopee Oficial (Promoção)",
+        loja: "Terabyte",
+        preco_pix: 1249.99,
+        preco_parcelado: 1470.58,
+        url_produto: "https://www.terabyteshop.com.br/produto/42016/monitor-gamer-asus-tuf-gaming-vg27aqme5f-27-pol-quad-hd-255hz-fast-ips-03ms-g-syncfreesync-hdmidp",
+        disponivel: true
+      },
+      {
+        loja: "Shopee Oficial (Cupom)",
         preco_pix: 1297.89,
         preco_parcelado: 1494.99,
         url_produto: "https://shopee.com.br/search?keyword=VG27AQME5F",
         disponivel: true
+      },
+      {
+        loja: "KaBuM!",
+        preco_pix: 1699.99,
+        preco_parcelado: 1999.99,
+        url_produto: "https://www.kabum.com.br/produto/1017203/monitor-gamer-asus-tuf-27-qhd-255hz-0-3ms-fast-ips-g-sync-comp-freesync-premium-hdr10-som-integrado-vg27aqme5f",
+        disponivel: true
       }
     ],
     historico: [
-      { data: "08/11", preco: 1599.00 },
-      { data: "09/11", preco: 1549.00 },
-      { data: "10/11", preco: 1499.00 },
-      { data: "11/11", preco: 1499.00 },
-      { data: "12/11", preco: 1499.00 }
+      { data: "08/11", preco: 1499.00 },
+      { data: "09/11", preco: 1399.00 },
+      { data: "10/11", preco: 1299.99 },
+      { data: "11/11", preco: 1249.99 },
+      { data: "12/11", preco: 1189.99 }
     ]
   }
 ];

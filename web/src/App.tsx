@@ -69,22 +69,19 @@ export function App() {
           };
 
           const fallbackPeca = INITIAL_PECAS.find(ip => ip.id === p.id);
-          if (fallbackPeca) {
-            return fallbackPeca;
-          }
 
           return {
             id: p.id,
             nome: p.nome,
             categoria: p.categoria,
             especificacoes: p.especificacoes,
-            imagem_url: p.imagem_url,
+            imagem_url: p.imagem_url || fallbackPeca?.imagem_url || '/images/cpu.jpg',
             preco_referencia: Number(p.preco_referencia),
             preco_alvo: Number(p.preco_alvo),
             ordem: p.ordem,
             melhor_oferta: { ...menor, is_melhor_preco: true },
             ofertas: ofertas.map((o: any) => ({ ...o, is_melhor_preco: o.loja === menor.loja })),
-            historico: INITIAL_PECAS.find(ip => ip.id === p.id)?.historico || []
+            historico: fallbackPeca?.historico || []
           };
         });
 
