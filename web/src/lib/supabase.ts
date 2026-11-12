@@ -112,8 +112,8 @@ export const INITIAL_PECAS: PecaBuild[] = [
       },
       {
         loja: "Pichau",
-        preco_pix: 6199.99,
-        preco_parcelado: 7294.11,
+        preco_pix: 6299.99,
+        preco_parcelado: 7411.75,
         url_produto: "https://www.pichau.com.br/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bit-gv-n5070gaming-oc-12gd",
         disponivel: true
       },
@@ -356,32 +356,33 @@ export const INITIAL_PECAS: PecaBuild[] = [
     categoria: "Monitor Gamer",
     especificacoes: "27\" Fast IPS • Resolução Quad HD (2560x1440) • 255Hz • 0.3ms • G-Sync / FreeSync Premium • Som Integrado",
     imagem_url: "/images/monitor.jpg?v=2",
-    preco_referencia: 1189.99,
+    preco_referencia: 1249.99,
     preco_alvo: 1300.00,
     ordem: 8,
     melhor_oferta: {
-      loja: "Pichau",
-      preco_pix: 1189.99,
-      preco_parcelado: 1400.00,
+      loja: "Pichau / Terabyte",
+      preco_pix: 1249.99,
+      preco_parcelado: 1470.58,
       url_produto: "https://www.pichau.com.br/monitor-gamer-asus-tuf-gaming-27-pol-fast-ips-qhd-0-3ms-255hz-elmb-sync-hdmi-dp-vg27aqme5f",
       disponivel: true,
       is_melhor_preco: true
     },
     ofertas: [
       {
-        loja: "Pichau (Menor Preço)",
-        preco_pix: 1189.99,
-        preco_parcelado: 1400.00,
+        loja: "Pichau (Empate - Menor Preço)",
+        preco_pix: 1249.99,
+        preco_parcelado: 1470.58,
         url_produto: "https://www.pichau.com.br/monitor-gamer-asus-tuf-gaming-27-pol-fast-ips-qhd-0-3ms-255hz-elmb-sync-hdmi-dp-vg27aqme5f",
         disponivel: true,
         is_melhor_preco: true
       },
       {
-        loja: "Terabyte",
+        loja: "Terabyte (Empate - Menor Preço)",
         preco_pix: 1249.99,
         preco_parcelado: 1470.58,
         url_produto: "https://www.terabyteshop.com.br/produto/42016/monitor-gamer-asus-tuf-gaming-vg27aqme5f-27-pol-quad-hd-255hz-fast-ips-03ms-g-syncfreesync-hdmidp",
-        disponivel: true
+        disponivel: true,
+        is_melhor_preco: true
       },
       {
         loja: "Shopee Oficial (Cupom)",
@@ -403,7 +404,7 @@ export const INITIAL_PECAS: PecaBuild[] = [
       { data: "09/11", preco: 1399.00 },
       { data: "10/11", preco: 1299.99 },
       { data: "11/11", preco: 1249.99 },
-      { data: "12/11", preco: 1189.99 }
+      { data: "12/11", preco: 1249.99 }
     ]
   }
 ];
