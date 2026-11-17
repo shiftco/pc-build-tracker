@@ -1,5 +1,6 @@
 import React from 'react';
 import { DollarSign, TrendingDown, CheckCircle2, ShoppingBag } from 'lucide-react';
+import { RAM_ALTERNATIVE_IDS } from '../lib/supabase';
 import type { PecaBuild } from '../lib/supabase';
 
 interface HeroStatsProps {
@@ -7,18 +8,21 @@ interface HeroStatsProps {
 }
 
 export const HeroStats: React.FC<HeroStatsProps> = ({ pecas }) => {
-  const totalPix = pecas.reduce((acc, p) => acc + (p.melhor_oferta?.preco_pix || p.preco_referencia), 0);
-  const totalParcelado = pecas.reduce((acc, p) => acc + (p.melhor_oferta?.preco_parcelado || (p.melhor_oferta?.preco_pix ? p.melhor_oferta.preco_pix * 1.15 : p.preco_referencia * 1.15)), 0);
+  const buildPecas = pecas.filter((p) => !RAM_ALTERNATIVE_IDS.has(p.id));
+  const extraCount = pecas.length - buildPecas.length;
+
+  const totalPix = buildPecas.reduce((acc, p) => acc + (p.melhor_oferta?.preco_pix || p.preco_referencia), 0);
+  const totalParcelado = buildPecas.reduce((acc, p) => acc + (p.melhor_oferta?.preco_parcelado || (p.melhor_oferta?.preco_pix ? p.melhor_oferta.preco_pix * 1.15 : p.preco_referencia * 1.15)), 0);
   
-  // Cálculo de pior preço registrado em lojas vs melhor preço
-  const piorTotal = pecas.reduce((acc, p) => {
-    const precosValidos = p.ofertas.map(o => o.preco_pix).filter(pr => pr < 4000 || p.categoria === 'Placa de Vídeo'); // ignora anomalias absurdas
+  // Cálculo de pior preço registrado em lojas válidas vs melhor preço (ignora anomalias > R$ 10.000)
+  const piorTotal = buildPecas.reduce((acc, p) => {
+    const precosValidos = p.ofertas.map(o => o.preco_pix).filter(pr => pr < 10000);
     const max = precosValidos.length ? Math.max(...precosValidos) : p.preco_referencia;
     return acc + max;
   }, 0);
 
   const economiaPotencial = Math.max(0, piorTotal - totalPix);
-  const totalAlvo = pecas.reduce((acc, p) => acc + p.preco_alvo, 0);
+  const totalAlvo = buildPecas.reduce((acc, p) => acc + p.preco_alvo, 0);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -86,12 +90,14 @@ export const HeroStats: React.FC<HeroStatsProps> = ({ pecas }) => {
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-white">
-            {pecas.length}/8
+            {pecas.length}
           </span>
-          <span className="text-xs font-mono text-zinc-400">rastreados</span>
+          <span className="text-xs font-mono text-zinc-400">
+            itens no radar {extraCount > 0 ? `(${buildPecas.length} build + ${extraCount} RAMs)` : ''}
+          </span>
         </div>
         <p className="text-xs text-zinc-500 mt-1 font-mono">
-          Meta de compra: {totalAlvo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          Meta build ({buildPecas.length} peças): {totalAlvo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
         </p>
       </div>
     </div>

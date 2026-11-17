@@ -16,12 +16,12 @@ export function App() {
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<'ordem' | 'preco-asc' | 'preco-desc'>('ordem');
 
-  // Categorias únicas
-  const categories = Array.from(new Set(INITIAL_PECAS.map((p) => p.categoria)));
+  // Categorias únicas (derivadas dinamicamente das peças ativas)
+  const categories = Array.from(new Set(pecas.map((p) => p.categoria)));
 
   // Contagem por categoria
   const categoryCounts = categories.reduce((acc, cat) => {
-    acc[cat] = INITIAL_PECAS.filter((p) => p.categoria === cat).length;
+    acc[cat] = pecas.filter((p) => p.categoria === cat).length;
     return acc;
   }, {} as Record<string, number>);
 
@@ -29,39 +29,47 @@ export function App() {
   const fetchLivePrices = async () => {
     setIsRefreshing(true);
     try {
-      const { data: dbPecas, error } = await supabase
-        .from('pc_pecas')
-        .select(`
-          id,
-          nome,
-          categoria,
-          especificacoes,
-          imagem_url,
-          preco_referencia,
-          preco_alvo,
-          ordem,
-          pc_ofertas (
-            loja,
-            preco_pix,
-            preco_parcelado,
-            disponivel,
-            url_produto
-          )
-        `)
-        .order('ordem', { ascending: true });
+      const [{ data: dbPecas, error }, { data: dbHistorico }] = await Promise.all([
+        supabase
+          .from('pc_pecas')
+          .select(`
+            id,
+            nome,
+            categoria,
+            especificacoes,
+            imagem_url,
+            preco_referencia,
+            preco_alvo,
+            ordem,
+            pc_ofertas (
+              loja,
+              preco_pix,
+              preco_parcelado,
+              disponivel,
+              url_produto
+            )
+          `)
+          .order('ordem', { ascending: true }),
+        supabase
+          .from('pc_historico_precos')
+          .select('peca_id, preco_pix, data_hora')
+          .order('data_hora', { ascending: true })
+      ]);
 
       if (!error && dbPecas && dbPecas.length > 0) {
         const mapped: PecaBuild[] = dbPecas.map((p: any) => {
-          const ofertas = (p.pc_ofertas || []).map((o: any) => ({
-            loja: o.loja,
-            preco_pix: Number(o.preco_pix),
-            preco_parcelado: Number(o.preco_parcelado),
-            url_produto: o.url_produto,
-            disponivel: o.disponivel
-          }));
+          const ofertas = (p.pc_ofertas || [])
+            .map((o: any) => ({
+              loja: o.loja,
+              preco_pix: Number(o.preco_pix),
+              preco_parcelado: Number(o.preco_parcelado),
+              url_produto: o.url_produto,
+              disponivel: o.disponivel
+            }))
+            .sort((a: any, b: any) => a.preco_pix - b.preco_pix);
 
-          const ordenadas = [...ofertas].sort((a, b) => a.preco_pix - b.preco_pix);
-          const menor = ordenadas[0] || {
+          const disponiveis = ofertas.filter((o: any) => o.disponivel);
+          const menor = (disponiveis.length > 0 ? disponiveis[0] : ofertas[0]) || {
             loja: 'KaBuM!',
             preco_pix: Number(p.preco_referencia),
             url_produto: '',
@@ -69,6 +77,19 @@ export function App() {
           };
 
           const fallbackPeca = INITIAL_PECAS.find(ip => ip.id === p.id);
+
+          // Agrupa menor preço por dia caso haja histórico no Supabase
+          const histRows = (dbHistorico || []).filter((h: any) => h.peca_id === p.id);
+          const histByDay = new Map<string, number>();
+          for (const h of histRows) {
+            const dt = new Date(h.data_hora);
+            const label = `${String(dt.getDate()).padStart(2, '0')}/${String(dt.getMonth() + 1).padStart(2, '0')}`;
+            const val = Number(h.preco_pix);
+            if (!histByDay.has(label) || val < (histByDay.get(label) as number)) {
+              histByDay.set(label, val);
+            }
+          }
+          const dbHist = Array.from(histByDay.entries()).map(([data, preco]) => ({ data, preco }));
 
           return {
             id: p.id,
@@ -80,8 +101,8 @@ export function App() {
             preco_alvo: Number(p.preco_alvo),
             ordem: p.ordem,
             melhor_oferta: { ...menor, is_melhor_preco: true },
-            ofertas: ofertas.map((o: any) => ({ ...o, is_melhor_preco: o.loja === menor.loja })),
-            historico: fallbackPeca?.historico || []
+            ofertas: ofertas.map((o: any) => ({ ...o, is_melhor_preco: o.preco_pix === menor.preco_pix && o.disponivel })),
+            historico: dbHist.length >= 2 ? dbHist : (fallbackPeca?.historico || [])
           };
         });
 

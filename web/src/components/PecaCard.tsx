@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ExternalLink, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { RAM_ALTERNATIVE_IDS } from '../lib/supabase';
 import type { PecaBuild } from '../lib/supabase';
 import { Sparkline } from './Sparkline';
 
@@ -12,15 +13,23 @@ export const PecaCard: React.FC<PecaCardProps> = ({ peca }) => {
 
   const melhor = peca.melhor_oferta;
   const bateuMeta = melhor && melhor.preco_pix <= peca.preco_alvo;
+  const isAlternativa = RAM_ALTERNATIVE_IDS.has(peca.id);
 
   return (
     <div className="rounded-xl bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700/80 transition-all flex flex-col justify-between overflow-hidden group">
       {/* Top Banner / Tags */}
       <div className="p-5 pb-3">
         <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300">
-            {peca.categoria}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300">
+              {peca.categoria}
+            </span>
+            {isAlternativa && (
+              <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300">
+                Opção Extra
+              </span>
+            )}
+          </div>
 
           {bateuMeta ? (
             <span className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
@@ -137,7 +146,7 @@ export const PecaCard: React.FC<PecaCardProps> = ({ peca }) => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className={of.preco_pix > 3000 && peca.categoria !== 'Placa de Vídeo' ? 'text-rose-400 line-through' : 'text-zinc-200'}>
+                      <span className={!of.disponivel ? 'text-rose-400 line-through' : of.is_melhor_preco ? 'text-emerald-300 font-semibold' : 'text-zinc-200'}>
                         {of.preco_pix.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                       </span>
                       <a
