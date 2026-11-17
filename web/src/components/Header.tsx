@@ -5,9 +5,17 @@ interface HeaderProps {
   onRefresh: () => void;
   isRefreshing: boolean;
   onOpenTelegramModal: () => void;
+  lastCheckedText?: string;
+  auditSummary?: string | null;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onRefresh, isRefreshing, onOpenTelegramModal }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onRefresh,
+  isRefreshing,
+  onOpenTelegramModal,
+  lastCheckedText,
+  auditSummary,
+}) => {
   return (
     <header className="border-b border-zinc-800/80 bg-black/80 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -39,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({ onRefresh, isRefreshing, onOpenT
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>5 Lojas Ativas</span>
+            <span>{auditSummary || lastCheckedText || 'Auto-Heal Ativo'}</span>
           </div>
 
           {/* Telegram Alert Button */}
@@ -55,10 +63,13 @@ export const Header: React.FC<HeaderProps> = ({ onRefresh, isRefreshing, onOpenT
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
+            title="Verifica links quebrados, estoque e preços reais nas lojas agora"
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-zinc-200 text-black transition-colors disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">{isRefreshing ? 'Atualizando...' : 'Atualizar'}</span>
+            <span className="hidden sm:inline">
+              {isRefreshing ? 'Validando Lojas...' : 'Validar & Atualizar'}
+            </span>
           </button>
         </div>
       </div>

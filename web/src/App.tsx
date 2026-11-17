@@ -15,6 +15,8 @@ export function App() {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<'ordem' | 'preco-asc' | 'preco-desc'>('ordem');
+  const [lastCheckedText, setLastCheckedText] = useState<string>('Verificando...');
+  const [auditSummary, setAuditSummary] = useState<string | null>(null);
 
   // Categorias únicas (derivadas dinamicamente das peças ativas)
   const categories = Array.from(new Set(pecas.map((p) => p.categoria)));
@@ -25,10 +27,32 @@ export function App() {
     return acc;
   }, {} as Record<string, number>);
 
-  // Tenta carregar do Supabase se online
-  const fetchLivePrices = async () => {
+  // Carrega do Supabase e opcionalmente aciona validação ao vivo nas lojas (/api/check-live)
+  const fetchLivePrices = async (triggerLiveAudit = false) => {
     setIsRefreshing(true);
     try {
+      if (triggerLiveAudit) {
+        setAuditSummary('Validando links nas lojas...');
+        try {
+          const auditResp = await fetch('/api/check-live', { method: 'POST' });
+          if (auditResp.ok) {
+            const auditJson = await auditResp.json();
+            if (auditJson?.ok && auditJson?.stats) {
+              const { checked, healed, disabled } = auditJson.stats;
+              const extras =
+                healed > 0
+                  ? ` • ${healed} auto-corrigido(s)`
+                  : disabled > 0
+                  ? ` • ${disabled} esgotado(s) ocultado(s)`
+                  : '';
+              setAuditSummary(`✓ ${checked} links ativos${extras}`);
+            }
+          }
+        } catch {
+          // Segue para leitura do banco mesmo em ambiente offline
+        }
+      }
+
       const [{ data: dbPecas, error }, { data: dbHistorico }] = await Promise.all([
         supabase
           .from('pc_pecas')
@@ -46,7 +70,8 @@ export function App() {
               preco_pix,
               preco_parcelado,
               disponivel,
-              url_produto
+              url_produto,
+              ultima_checagem
             )
           `)
           .order('ordem', { ascending: true }),
@@ -57,23 +82,33 @@ export function App() {
       ]);
 
       if (!error && dbPecas && dbPecas.length > 0) {
+        let latestCheckDate: Date | null = null;
+
         const mapped: PecaBuild[] = dbPecas.map((p: any) => {
-          const ofertas = (p.pc_ofertas || [])
-            .map((o: any) => ({
-              loja: o.loja,
-              preco_pix: Number(o.preco_pix),
-              preco_parcelado: Number(o.preco_parcelado),
-              url_produto: o.url_produto,
-              disponivel: o.disponivel
-            }))
+          const todasOfertas = (p.pc_ofertas || [])
+            .map((o: any) => {
+              if (o.ultima_checagem) {
+                const d = new Date(o.ultima_checagem);
+                if (!latestCheckDate || d > latestCheckDate) latestCheckDate = d;
+              }
+              return {
+                loja: o.loja,
+                preco_pix: Number(o.preco_pix),
+                preco_parcelado: Number(o.preco_parcelado),
+                url_produto: o.url_produto,
+                disponivel: Boolean(o.disponivel),
+                ultima_checagem: o.ultima_checagem
+              };
+            })
             .sort((a: any, b: any) => a.preco_pix - b.preco_pix);
 
-          const disponiveis = ofertas.filter((o: any) => o.disponivel);
-          const menor = (disponiveis.length > 0 ? disponiveis[0] : ofertas[0]) || {
-            loja: 'KaBuM!',
+          // Exibe apenas ofertas disponíveis e válidas
+          const disponiveis = todasOfertas.filter((o: any) => o.disponivel);
+          const menor = disponiveis[0] || {
+            loja: 'Indisponível',
             preco_pix: Number(p.preco_referencia),
-            url_produto: '',
-            disponivel: true
+            url_produto: '#',
+            disponivel: false
           };
 
           const fallbackPeca = INITIAL_PECAS.find(ip => ip.id === p.id);
@@ -101,12 +136,19 @@ export function App() {
             preco_alvo: Number(p.preco_alvo),
             ordem: p.ordem,
             melhor_oferta: { ...menor, is_melhor_preco: true },
-            ofertas: ofertas.map((o: any) => ({ ...o, is_melhor_preco: o.preco_pix === menor.preco_pix && o.disponivel })),
+            ofertas: disponiveis.map((o: any) => ({ ...o, is_melhor_preco: o.preco_pix === menor.preco_pix })),
             historico: dbHist.length >= 2 ? dbHist : (fallbackPeca?.historico || [])
           };
         });
 
         setPecas(mapped);
+
+        if (latestCheckDate) {
+          const d = latestCheckDate as Date;
+          const hh = String(d.getHours()).padStart(2, '0');
+          const mm = String(d.getMinutes()).padStart(2, '0');
+          setLastCheckedText(`Verificado às ${hh}:${mm}`);
+        }
       }
     } catch (err) {
       console.log('Utilizando cache local de ofertas compiladas:', err);
@@ -116,7 +158,17 @@ export function App() {
   };
 
   useEffect(() => {
-    fetchLivePrices();
+    // Carrega instantaneamente do Supabase e dispara validação silenciosa em background
+    fetchLivePrices(false).then(() => {
+      fetch('/api/check-live', { method: 'POST' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((res) => {
+          if (res?.ok && (res.stats?.updated > 0 || res.stats?.healed > 0 || res.stats?.disabled > 0)) {
+            fetchLivePrices(false);
+          }
+        })
+        .catch(() => {});
+    });
   }, []);
 
   // Filtragem e busca
@@ -143,9 +195,11 @@ export function App() {
     <div className="min-h-screen bg-black text-zinc-100 flex flex-col selection:bg-zinc-800 selection:text-white">
       {/* Top Header */}
       <Header
-        onRefresh={fetchLivePrices}
+        onRefresh={() => fetchLivePrices(true)}
         isRefreshing={isRefreshing}
         onOpenTelegramModal={() => setIsTelegramModalOpen(true)}
+        lastCheckedText={lastCheckedText}
+        auditSummary={auditSummary}
       />
 
       {/* Main Container */}

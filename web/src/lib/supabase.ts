@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://zwfecsnodhxbzbagdxng.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3ZmVjc25odhxbzbagdxngIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMzgxODAsImV4cCI6MjEwMzYxNDE4MH0.DxMNm0pD-Mm-nyNFLjVsoBHuo-aLxhU9eA7JhyCYU5s';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3ZmVjc25vZGh4YnpiYWdkeG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMzgxODAsImV4cCI6MjEwMzYxNDE4MH0.DxMNm0pD-Mm-nyNFLjVsoBHuo-aLxhU9eA7JhyCYU5s';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -12,6 +12,7 @@ export interface OfertaLoja {
   url_produto: string;
   disponivel: boolean;
   is_melhor_preco?: boolean;
+  ultima_checagem?: string;
 }
 
 export interface HistoricoPonto {
@@ -77,43 +78,50 @@ export const INITIAL_PECAS: PecaBuild[] = [
   },
   {
     id: "gpu-rtx-5070",
-    nome: "Gigabyte GeForce RTX 5070 Gaming OC 12GB GDDR7",
+    nome: "Gigabyte GeForce RTX 5070 12GB GDDR7 (Windforce / Gaming OC)",
     categoria: "Placa de Vídeo",
-    especificacoes: "12GB GDDR7 • 192-bit • DLSS 4 / Ray Tracing • Triplo Fan Windforce • GV-N5070GAMING-OC-12GD",
+    especificacoes: "12GB GDDR7 • 192-bit • DLSS 4 / Ray Tracing • Triplo Fan • GV-N5070WF3OC-12GD / GV-N5070GAMING-OC-12GD",
     imagem_url: "/images/gpu.jpg?v=2",
-    preco_referencia: 6199.99,
+    preco_referencia: 5999.99,
     preco_alvo: 5600.00,
     ordem: 2,
     melhor_oferta: {
-      loja: "Pichau",
-      preco_pix: 6199.99,
-      preco_parcelado: 7294.11,
-      url_produto: "https://www.pichau.com.br/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bit-gv-n5070gaming-oc-12gd",
+      loja: "Terabyte (Windforce OC 12GB)",
+      preco_pix: 5999.99,
+      preco_parcelado: 7058.81,
+      url_produto: "https://www.terabyteshop.com.br/produto/35379/placa-de-video-gigabyte-nvidia-geforce-rtx-5070-windforce-oc-sff-12gb-gddr7-dlss-ray-tracing-gv-n5070wf3oc-12gd",
       disponivel: true,
       is_melhor_preco: true
     },
     ofertas: [
       {
-        loja: "Pichau (Em Estoque)",
-        preco_pix: 6199.99,
-        preco_parcelado: 7294.11,
-        url_produto: "https://www.pichau.com.br/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bit-gv-n5070gaming-oc-12gd",
+        loja: "Terabyte (Windforce OC 12GB)",
+        preco_pix: 5999.99,
+        preco_parcelado: 7058.81,
+        url_produto: "https://www.terabyteshop.com.br/produto/35379/placa-de-video-gigabyte-nvidia-geforce-rtx-5070-windforce-oc-sff-12gb-gddr7-dlss-ray-tracing-gv-n5070wf3oc-12gd",
         disponivel: true,
         is_melhor_preco: true
       },
       {
-        loja: "KaBuM! (Marketplace)",
-        preco_pix: 12084.93,
-        preco_parcelado: 12084.93,
-        url_produto: "https://www.kabum.com.br/produto/754152/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bits-gv-n5070gaming-oc-12gd",
+        loja: "Pichau (Gaming OC 12GB)",
+        preco_pix: 6199.99,
+        preco_parcelado: 7294.11,
+        url_produto: "https://www.pichau.com.br/placa-de-video-gigabyte-geforce-rtx-5070-gaming-oc-12gb-gddr7-192-bit-gv-n5070gaming-oc-12gd",
+        disponivel: true
+      },
+      {
+        loja: "KaBuM! (Em Estoque)",
+        preco_pix: 6999.99,
+        preco_parcelado: 8045.96,
+        url_produto: "https://www.kabum.com.br/produto/714570/placa-de-video-gigabyte-rtx-5070-aero-12g-nvidia-geforce-12gb-gddr7-192bits-rgb-dlss-ray-tracing-9vn5070ao-00-g10",
         disponivel: true
       }
     ],
     historico: [
       { data: "08/11", preco: 6399.00 },
-      { data: "10/11", preco: 6199.99 },
-      { data: "12/11", preco: 6299.99 },
-      { data: "17/11", preco: 6199.99 }
+      { data: "10/11", preco: 6299.99 },
+      { data: "12/11", preco: 6199.99 },
+      { data: "17/11", preco: 5999.99 }
     ]
   },
   {
@@ -126,7 +134,7 @@ export const INITIAL_PECAS: PecaBuild[] = [
     preco_alvo: 1350.00,
     ordem: 3,
     melhor_oferta: {
-      loja: "KaBuM!",
+      loja: "KaBuM! (Em Estoque)",
       preco_pix: 1448.99,
       preco_parcelado: 1609.99,
       url_produto: "https://www.kabum.com.br/produto/871302/placa-mae-asus-tuf-b650em-plus-amd-am5-m-atx-ddr5-wifi-6e-bluetooth-preto-90mb1lu0",
@@ -135,7 +143,7 @@ export const INITIAL_PECAS: PecaBuild[] = [
     },
     ofertas: [
       {
-        loja: "KaBuM! (Oficial em Estoque)",
+        loja: "KaBuM! (Em Estoque)",
         preco_pix: 1448.99,
         preco_parcelado: 1609.99,
         url_produto: "https://www.kabum.com.br/produto/871302/placa-mae-asus-tuf-b650em-plus-amd-am5-m-atx-ddr5-wifi-6e-bluetooth-preto-90mb1lu0",
@@ -147,6 +155,13 @@ export const INITIAL_PECAS: PecaBuild[] = [
         preco_pix: 1449.99,
         preco_parcelado: 1705.87,
         url_produto: "https://www.pichau.com.br/placa-mae-asus-tuf-gaming-b650em-plus-wi-fi-ddr5-socket-amd-am5-m-atx-chipset-amd-b650-tuf-gaming-b650em-plus-wifi",
+        disponivel: true
+      },
+      {
+        loja: "Terabyte",
+        preco_pix: 1449.99,
+        preco_parcelado: 1705.87,
+        url_produto: "https://www.terabyteshop.com.br/produto/38004/placa-mae-asus-tuf-gaming-b650em-plus-wifi-chipset-b650-amd-am5-matx-ddr5-90mb1lu0-m0eay0",
         disponivel: true
       }
     ],
@@ -342,6 +357,13 @@ export const INITIAL_PECAS: PecaBuild[] = [
         url_produto: "https://www.kabum.com.br/produto/592338/fonte-msi-mag-a850gl-pcie5-850w-80-plus-gold-modular-pfc-ativo-preto",
         disponivel: true,
         is_melhor_preco: true
+      },
+      {
+        loja: "Terabyte",
+        preco_pix: 699.99,
+        preco_parcelado: 823.52,
+        url_produto: "https://www.terabyteshop.com.br/produto/29394/fonte-msi-mag-a850gl-pcie5-850w-80-plus-gold-pfc-ativo-full-modular-preto-mag-a850gl-pcie5",
+        disponivel: true
       }
     ],
     historico: [
@@ -376,6 +398,13 @@ export const INITIAL_PECAS: PecaBuild[] = [
         url_produto: "https://www.kabum.com.br/produto/998245/water-cooler-corsair-nautilus-360-argb-360mm-amd-e-intel-preto-cw-9060093-ww",
         disponivel: true,
         is_melhor_preco: true
+      },
+      {
+        loja: "Terabyte",
+        preco_pix: 589.99,
+        preco_parcelado: 694.11,
+        url_produto: "https://www.terabyteshop.com.br/produto/40029/water-cooler-corsair-nautilus-rs-argb-360mm-pwm-intel-amd-preto-cw-9060093-ww",
+        disponivel: true
       }
     ],
     historico: [
@@ -391,39 +420,45 @@ export const INITIAL_PECAS: PecaBuild[] = [
     categoria: "Monitor Gamer",
     especificacoes: "27\" Fast IPS • Resolução Quad HD (2560x1440) • 255Hz • 0.3ms • G-Sync / FreeSync Premium • Som Integrado",
     imagem_url: "/images/monitor.jpg?v=2",
-    preco_referencia: 1299.99,
+    preco_referencia: 1249.99,
     preco_alvo: 1250.00,
     ordem: 10,
     melhor_oferta: {
-      loja: "KaBuM! / Pichau",
-      preco_pix: 1299.99,
-      preco_parcelado: 1529.40,
-      url_produto: "https://www.kabum.com.br/produto/1017203/monitor-gamer-asus-tuf-27-qhd-255hz-0-3ms-fast-ips-g-sync-comp-freesync-premium-hdr10-som-integrado-vg27aqme5f",
+      loja: "Terabyte (Menor Preço)",
+      preco_pix: 1249.99,
+      preco_parcelado: 1470.58,
+      url_produto: "https://www.terabyteshop.com.br/produto/42016/monitor-gamer-asus-tuf-gaming-vg27aqme5f-27-pol-quad-hd-255hz-fast-ips-03ms-g-syncfreesync-hdmidp",
       disponivel: true,
       is_melhor_preco: true
     },
     ofertas: [
       {
-        loja: "KaBuM! (Empate - Menor Preço)",
-        preco_pix: 1299.99,
-        preco_parcelado: 1529.40,
-        url_produto: "https://www.kabum.com.br/produto/1017203/monitor-gamer-asus-tuf-27-qhd-255hz-0-3ms-fast-ips-g-sync-comp-freesync-premium-hdr10-som-integrado-vg27aqme5f",
+        loja: "Terabyte (Menor Preço)",
+        preco_pix: 1249.99,
+        preco_parcelado: 1470.58,
+        url_produto: "https://www.terabyteshop.com.br/produto/42016/monitor-gamer-asus-tuf-gaming-vg27aqme5f-27-pol-quad-hd-255hz-fast-ips-03ms-g-syncfreesync-hdmidp",
         disponivel: true,
         is_melhor_preco: true
       },
       {
-        loja: "Pichau (Empate - Menor Preço)",
+        loja: "KaBuM!",
+        preco_pix: 1299.99,
+        preco_parcelado: 1529.40,
+        url_produto: "https://www.kabum.com.br/produto/1017203/monitor-gamer-asus-tuf-27-qhd-255hz-0-3ms-fast-ips-g-sync-comp-freesync-premium-hdr10-som-integrado-vg27aqme5f",
+        disponivel: true
+      },
+      {
+        loja: "Pichau",
         preco_pix: 1299.99,
         preco_parcelado: 1529.40,
         url_produto: "https://www.pichau.com.br/monitor-gamer-asus-tuf-gaming-27-pol-fast-ips-qhd-0-3ms-255hz-elmb-sync-hdmi-dp-vg27aqme5f",
-        disponivel: true,
-        is_melhor_preco: true
+        disponivel: true
       }
     ],
     historico: [
       { data: "08/11", preco: 1499.00 },
-      { data: "12/11", preco: 1249.99 },
-      { data: "17/11", preco: 1299.99 }
+      { data: "12/11", preco: 1299.99 },
+      { data: "17/11", preco: 1249.99 }
     ]
   }
 ];
